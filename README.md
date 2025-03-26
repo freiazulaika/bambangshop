@@ -61,7 +61,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [x] Commit: `Implement subscribe function in Notification controller.`
     -   [x] Commit: `Implement unsubscribe function in Notification service.`
     -   [x] Commit: `Implement unsubscribe function in Notification controller.`
-    -   [ ] Write answers of your learning module's "Reflection Publisher-2" questions in this README.
+    -   [x] Write answers of your learning module's "Reflection Publisher-2" questions in this README.
 -   **STAGE 3: Implement notification mechanism**
     -   [ ] Commit: `Implement update method in Subscriber model to send notification HTTP requests.`
     -   [ ] Commit: `Implement notify function in Notification service to notify each Subscriber.`
@@ -88,5 +88,17 @@ Penggunaan `DashMap` dalam kasus ini sudah tepat walaupun `id` pada `Product` da
 Karena BambangShop berjalan secara _multi-threading_ maka penggunaan `DashMap` akan lebih tepat dibandingkan menggunakan Singleton pattern. `DashMap` memliki kemampuan _concurrent access_ secara _thread-safe_, sehingga data `SUBSCRIBERS` bisa diakses tanpa perlu _locking_ manual. Sementara itu, menerapkan Singleton di Rust juga lebih  kompleks karena keterbatasan pada static _variable_ dan _mutability_. Untuk menyimpan `Subscriber` berdasarkan `product_type`, `DashMap` juga lebih praktis, efisien, dan minim risiko dibanding menggunakan Singleton.
 
 #### Reflection Publisher-2
+
+> In the Model-View Controller (MVC) compound pattern, there is no “Service” and “Repository”. Model in MVC covers both data storage and business logic. Explain based on your understanding of design principles, why we need to separate “Service” and “Repository” from a Model?
+
+Untuk memenuhi prinsip salah satu prinsip dalam S.O.L.I.D yaitu _single responsibility_, kita perlu memisahkan `Service` dan `Repository` dari `Model`. Dengan begitu, setiap komponen memiliki tanggung jawab yang jelas dan spesifik. `Model` hanya bertugas sebagai representasi data, sedangkan `Repository` bertanggung jawab terhadap akses dan penyimpanan data, dan `Service` menangani _business logic_. Pemisahan ini membuat kode menjadi lebih modular, mudah di-_maintain_, serta meningkatkan _scalability_ dan _testability_.
+
+> What happens if we only use the Model? Explain your imagination on how the interactions between each model (Program, Subscriber, Notification) affect the code complexity for each model?
+
+Jika kita hanya menggunakan `Model` tanpa memisahkan `Service` dan `Repository`, maka kode dalam `Model` akan menjadi lebih kompleks karena harus menangani berbagai tanggung jawab sekaligus. Jika tidak dipisahkan, `Model' harus mengatur representasi data, akses data, dan _business logic_. Sebagai contoh, `Subscriber` tidak hanya menyimpan data, tetapi juga memiliki kemampuan untuk subscribe, unsubscribe, menerima notifikasi, dan mungkin melakukan interaksi lainnya dengan Notification. Jika semua fungsi ini digabungkan dalam satu Model, akan sulit untuk memahami secara jelas apa peran dari `Model` tersebut. Hal ini berdampak pada meningkatnya kompleksitas dan kesulitan dalam _maintainability_. Selain itu, _coupling_ antar komponen juga menjadi lebih tinggi, sehingga perubahan kecil pada satu bagian dapat memicu perubahan besar di bagian lain.
+
+> Have you explored more about Postman? Tell us how this tool helps you to test your current work. You might want to also list which features in Postman you are interested in or feel like it is helpful to help your Group Project or any of your future software engineering projects.
+
+Sejauh yang saya tahu, Postman ini sangat membantu untuk _testing_ API. Saya bisa kirim request seperti `GET`, `POST`, `PUT`, dan `DELETE`, lalu langsung dapat melihat responsnya. Postman juga punya fitur tambahan seperti Headers, Authorization, dan Environment variable yang bikin testing jadi lebih fleksibel. Selain itu, fitur Collection memudahkan saya mengelompokkan request sesuai kebutuhan. Menurut saya, Postman jauh lebih praktis dibanding harus bikin script sendiri atau ngetes lewat browser.
 
 #### Reflection Publisher-3
