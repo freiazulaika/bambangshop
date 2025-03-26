@@ -25,8 +25,6 @@ The subscribers are another Rocket instances, so the notification will be sent u
 
 ## API Documentations
 
-You can download the Postman Collection JSON here: https://ristek.link/AdvProgWeek7Postman
-
 After you download the Postman Collection, you can try the endpoints inside "BambangShop Publisher" folder.
 This Postman collection also contains endpoints that you need to implement later on (the `Notification` feature).
 
@@ -56,9 +54,9 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [X] Commit: `Implement add function in Subscriber repository.`
     -   [X] Commit: `Implement list_all function in Subscriber repository.`
     -   [X] Commit: `Implement delete function in Subscriber repository.`
-    -   [ ] Write answers of your learning module's "Reflection Publisher-1" questions in this README.
+    -   [x] Write answers of your learning module's "Reflection Publisher-1" questions in this README.
 -   **STAGE 2: Implement services and controllers**
-    -   [ ] Commit: `Create Notification service struct skeleton.`
+    -   [] Commit: `Create Notification service struct skeleton.`
     -   [ ] Commit: `Implement subscribe function in Notification service.`
     -   [ ] Commit: `Implement subscribe function in Notification controller.`
     -   [ ] Commit: `Implement unsubscribe function in Notification service.`
@@ -77,6 +75,17 @@ This is the place for you to write reflections:
 ### Mandatory (Publisher) Reflections
 
 #### Reflection Publisher-1
+> In the Observer pattern diagram explained by the Head First Design Pattern book, Subscriber is defined as an interface. Explain based on your understanding of Observer design patterns, do we still need an interface (or trait in Rust) in this BambangShop case, or a single Model struct is enough?
+
+Menurut saya, saat ini penggunaan satu model `Subscriber` sudah cukup untuk menerapkan pola Observer. Saat ini hanya ada satu entitas yang diamati yaitu model `Product` dengan atribut tipe yang dapat di-subscribe oleh `Subscriber`. Karena observer dalam sistem ini hanya terdiri dari satu jenis maka penggunaan interface atau trait masih belum diperlukan. Interface akan lebih bermanfaat apabila terdapat banyak jenis observer yang memiliki perilaku berbeda dan perlu diakomodasi dalam sistem yang lebih fleksibel.
+
+> id in Program and url in Subscriber is intended to be unique. Explain based on your understanding, is using Vec (list) sufficient or using DashMap (map/dictionary) like we currently use is necessary for this case?
+
+Penggunaan `DashMap` dalam kasus ini sudah tepat walaupun `id` pada `Product` dan `url` pada `Subscriber` bersifat unik. Hal ini karena kita ingin memetakan dan menyimpan `Subscriber` berdasarkan `product_type` dari `Product`. Jika kita menggunakan `Vec`, kita tetap memerlukan struktur data tambahan untuk menghubungkan index `Vec` dengan `product_type`. Selain itu, menyimpan `url` dalam `Vec` akan menyulitkan proses penghapusan `Subscriber` karena membutuhkan pencarian secara linear untuk menemukan entri yang sesuai. Dengan `DashMap`, proses pencarian dan penghapusan dapat dilakukan secara efisien dalam waktu konstan. `DashMap` juga memudahkan kita menyimpan pasangan `id` dan `url` dalam satu struktur yang ringkas dan terorganisir dan tidak perlu membuat dua array terpisah. Selain itu `DashMap` juga memiliki kemampuan akses secara _concurrent_, sehingga jauh lebih aman dan optimal digunakan apabila akan dijalankan dalam _multi-threading_ di masa depan.
+
+> When programming using Rust, we are enforced by rigorous compiler constraints to make a thread-safe program. In the case of the List of Subscribers (SUBSCRIBERS) static variable, we used the DashMap external library for thread safe HashMap. Explain based on your understanding of design patterns, do we still need DashMap or we can implement Singleton pattern instead?
+
+Karena BambangShop berjalan secara _multi-threading_ maka penggunaan `DashMap` akan lebih tepat dibandingkan menggunakan Singleton pattern. `DashMap` memliki kemampuan _concurrent access_ secara _thread-safe_, sehingga data `SUBSCRIBERS` bisa diakses tanpa perlu _locking_ manual. Sementara itu, menerapkan Singleton di Rust juga lebih  kompleks karena keterbatasan pada static _variable_ dan _mutability_. Untuk menyimpan `Subscriber` berdasarkan `product_type`, `DashMap` juga lebih praktis, efisien, dan minim risiko dibanding menggunakan Singleton.
 
 #### Reflection Publisher-2
 
