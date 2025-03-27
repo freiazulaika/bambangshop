@@ -67,7 +67,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [x] Commit: `Implement notify function in Notification service to notify each Subscriber.`
     -   [x] Commit: `Implement publish function in Program service and Program controller.`
     -   [x] Commit: `Edit Product service methods to call notify after create/delete.`
-    -   [ ] Write answers of your learning module's "Reflection Publisher-3" questions in this README.
+    -   [x] Write answers of your learning module's "Reflection Publisher-3" questions in this README.
 
 ## Your Reflections
 This is the place for you to write reflections:
@@ -102,3 +102,15 @@ Jika kita hanya menggunakan `Model` tanpa memisahkan `Service` dan `Repository`,
 Sejauh yang saya tahu, Postman ini sangat membantu untuk _testing_ API. Saya bisa kirim request seperti `GET`, `POST`, `PUT`, dan `DELETE`, lalu langsung dapat melihat responsnya. Postman juga punya fitur tambahan seperti Headers, Authorization, dan Environment variable yang bikin testing jadi lebih fleksibel. Selain itu, fitur Collection memudahkan saya mengelompokkan request sesuai kebutuhan. Menurut saya, Postman jauh lebih praktis dibanding harus bikin script sendiri atau ngetes lewat browser.
 
 #### Reflection Publisher-3
+
+> Observer Pattern has two variations: Push model (publisher pushes data to subscribers) and Pull model (subscribers pull data from publisher). In this tutorial case, which variation of Observer Pattern that we use?
+
+Jenis Observer Pattern yang digunakan pada tutorial ini adalah `Push` karena `Publisher` mengirimkan notifikasi ke seluruh `Subscriber` setiap kali terjadi perubahan pada `Product`. Hal ini terlihat pada pemanggilan method `notify` dalam `NotificationService`, yang terjadi ketika produk dibuat, dihapus, atau di-publish. Implementasi ini dapat ditemukan pada berkas `src/service/product.rs`, di mana `NotificationService` digunakan untuk mengirim data langsung ke Subscriber tanpa menunggu permintaan dari mereka.
+
+> What are the advantages and disadvantages of using the other variation of Observer Pattern for this tutorial case? (example: if you answer Q1 with Push, then imagine if we used Pull)
+
+Keuntungan jika menggunakan model `Pull` yaitu `Subscriber` menjadi tidak perlu langsung diberi notifikasi setiap kali terjadi perubahan pada `Product`. Sebaliknya, `Subscriber` bisa bebas menentukan kapan ingin mengambil data terbaru dari `Publisher`. Hal ini bisa mengurangi beban server karena tidak perlu membuat _thread_ tambahan untuk mengirim notifikasi secara langsung setiap ada perubahan. Kekurangannya adalah `Subscriber` harus aktif melakukan `pull` secara berkala agar tidak tertinggal informasi. Jika tidak sering melakukan `pull`, mereka bisa saja melewatkan perubahan penting karena tidak ada notifikasi otomatis yang dikirimkan dari`Publisher`.
+
+> Explain what will happen to the program if we decide to not use multi-threading in the notification process.
+
+Menurut saya, proses akan berjalan secara _sequential_ dan akan memakan waktu lebih lama karena _bottleneck_ terjadi ketika `Publisher` mengirimkan notifikasi ke seluruh `Subscriber` melalui method `notify()` di class `NotificationService`. Setiap `product_type` bisa memiliki banyak `Subscriber` dan jika proses notifikasi tidak dijalankan secara _multi-threaded_, maka pengiriman notifikasi akan menghambat proses lain. Hal ini dapat membuat _web app_ tidak responsif dan tidak mampu menangani _request_ lain selama proses notifikasi berlangsung.
